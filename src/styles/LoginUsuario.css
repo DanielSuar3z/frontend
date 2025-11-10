@@ -1,0 +1,144 @@
+
+.login-container {
+  min-height: 93vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(45deg, #f2f55a, #ffcc99);
+}
+
+.login-card {
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.hotel-image {
+  flex: 1.5;
+  overflow: hidden;
+}
+
+.hotel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.login-form-container {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #f9f5ea; /* Tono beige muy claro */
+}
+
+.login-title {
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #e8dfc9; /* Color beige para los campos */
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.input-icon-wrapper:focus-within {
+  box-shadow: 0 0 0 2px #d4c9a8;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  padding-left: 15px;
+  color: #826f4a; /* Color café/beige oscuro para los íconos */
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background-color: #e8dfc9; /* Mismo color beige que el wrapper */
+  color: #4b4639; /* Color oscuro para el texto */
+  font-size: 1rem;
+  outline: none;
+}
+
+.login-form input::placeholder {
+  color: #a39779; /* Color beige oscuro para el placeholder */
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  color: #826f4a;
+}
+
+.remember-me input {
+  margin-right: 5px;
+}
+
+.new-account {
+  color: #826f4a;
+  text-decoration: none;
+}
+
+.new-account:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #c2ae7e; /* Color beige/dorado para el botón */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+}
+
+.login-button:hover {
+  background-color: #a8946a; /* Versión más oscura al pasar el mouse */
+  transform: translateY(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login-card {
+    flex-direction: column;
+  }
+  
+  .hotel-image {
+    height: 200px;
+  }
+}

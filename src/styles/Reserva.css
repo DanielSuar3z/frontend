@@ -1,0 +1,156 @@
+/* src/styles/ReservaLibro.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.reserva-libro-modal {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #333;
+}
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.btn-cerrar:hover {
+    color: #333;
+}
+
+.libro-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.libro-info h3 {
+    margin: 0 0 10px 0;
+    color: #2c5530;
+}
+
+.libro-info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.form-reserva {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2c5530;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-cancelar {
+    padding: 10px 20px;
+    border: 1px solid #dc3545;
+    background: white;
+    color: #dc3545;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-confirmar {
+    padding: 10px 20px;
+    border: none;
+    background: #2c5530;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-confirmar:hover:not(:disabled) {
+    background: #1e3a22;
+}
+
+.btn-confirmar:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.success-message {
+    background: #d1edff;
+    color: #155724;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.success-message h3 {
+    margin: 0 0 10px 0;
+    color: #155724;
+}

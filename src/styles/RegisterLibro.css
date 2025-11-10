@@ -1,0 +1,351 @@
+.register-card {
+    margin: 20px auto;
+    max-width: 1400px; /* Aumentado para acomodar 3 columnas */
+    width: 100%;
+    background-image: linear-gradient(90deg, #f2f55ace, #ffcc99d0);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+h3, h4 {
+    font-family: 'Arial', sans-serif;
+    color: #4b4639;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    line-height: 1.3;
+    border-bottom: 2px solid #d4c9a8;
+    padding-bottom: 8px;
+}
+
+h3 {
+    font-size: 1.2em;
+}
+
+h4 {
+    font-size: 1em;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.register-libro-container { /* Cambiado de register-hospedaje-container */
+    padding: 30px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.register-title {
+    font-size: 2.2rem;
+    color: #333;
+    margin-top: -10px;
+    margin-bottom: 25px;
+    text-align: center;
+    background: linear-gradient(45deg, #836d3b, #a8946a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.form-columns {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+.form-column {
+    flex: 1;
+    min-width: 300px; /* Asegura que las columnas no se hagan demasiado pequeñas */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #e8dfc9;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #d4c9a8;
+}
+
+.input-icon-wrapper:focus-within {
+    box-shadow: 0 0 0 2px #836d3b;
+    border-color: #836d3b;
+}
+
+.textarea-wrapper {
+    align-items: flex-start;
+    height: 100%;
+}
+
+.textarea-wrapper .icon {
+    padding-top: 15px;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    padding-left: 15px;
+    color: #826f4a;
+    font-size: 1.1em;
+}
+
+.register-form input[type="email"],
+.register-form input[type="number"],
+.register-form input[type="text"],
+.register-form input[type="time"],
+.register-form input[type="checkbox"],
+.register-form input[type="tel"],
+.register-form select,
+.register-form textarea {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    background-color: #e8dfc9;
+    color: #4b4639;
+    font-size: 1rem;
+    outline: none;
+    font-family: 'Arial', sans-serif;
+}
+
+.register-form input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.register-form input[type="number"]::-webkit-outer-spin-button,
+.register-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.register-form textarea {
+    resize: none;
+    height: 69px;
+}
+
+.register-form input::placeholder,
+.register-form textarea::placeholder {
+    color: #a39779;
+}
+
+.register-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color: #4b4639 !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0l6 6 6-6z" fill="%234b4639"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+.register-form select:hover {
+    background-color: #dfd5b8;
+}
+
+/* Elimina la flecha en IE */
+.register-form select::-ms-expand {
+    display: none;
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.register-button {
+    width: 300px;
+    padding: 15px;
+    background-color: #836d3b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 auto;
+    display: block;
+    transition: transform 0.3s ease-in-out, box-shadow 0.5s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.register-button:hover {
+    background-color: #a8946a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.register-button:disabled {
+    background-color: #a39779;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.login-link {
+    text-align: center;
+    color: #826f4a;
+    font-size: 0.9rem;
+}
+
+.login-link a {
+    color: #826f4a;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    color: #a8946a;
+}
+
+.register-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-image: linear-gradient(45deg, #f2f55ace, #ffcc99d0);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilos para mensajes de éxito y error */
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid #c3e6cb;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid #f5c6cb;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Estilos para grupos de formulario específicos */
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Mejoras visuales para las secciones */
+.form-column h3 {
+    background: linear-gradient(90deg, #836d3b, transparent);
+    padding: 10px 15px;
+    margin-left: -15px;
+    margin-right: -15px;
+    border-radius: 5px;
+    color: white;
+    border-bottom: none;
+}
+
+/* Estilos responsivos */
+@media (max-width: 1200px) {
+    .register-card {
+        max-width: 1000px;
+    }
+    
+    .form-columns {
+        flex-wrap: wrap;
+    }
+    
+    .form-column {
+        min-width: calc(50% - 25px);
+    }
+}
+
+@media (max-width: 768px) {
+    .form-columns {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-column {
+        min-width: 100%;
+    }
+
+    .register-libro-container {
+        padding: 20px 25px 25px;
+    }
+
+    .register-title {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    
+    .register-button {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .form-column h3 {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-libro-container {
+        padding: 15px 20px 20px;
+    }
+    
+    .register-title {
+        font-size: 1.6rem;
+    }
+    
+    .input-icon-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .icon {
+        width: 100%;
+        padding: 10px;
+        justify-content: flex-start;
+    }
+    
+    .register-form input,
+    .register-form select,
+    .register-form textarea {
+        padding: 12px;
+    }
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.register-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.form-column {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.form-column:nth-child(1) { animation-delay: 0.1s; }
+.form-column:nth-child(2) { animation-delay: 0.2s; }
+.form-column:nth-child(3) { animation-delay: 0.3s; }

@@ -1,0 +1,154 @@
+.pag-fondo {
+    margin: auto;
+    max-width: 100%;
+    width: 100%;
+    background-image: linear-gradient(90deg, #f2f55a, #ffcc99);
+    overflow: hidden;
+}
+
+.profile-container {
+  padding: 24px;
+  max-width: 700px;
+  border-radius: 15px;
+  margin: 20px auto;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.loading-message {
+  color: #666;
+  text-align: center;
+  font-style: italic;
+  padding: 20px 0;
+}
+
+.error-message {
+  color: #e53935;
+  background-color: #ffebee;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+.profile-title {
+  color: #2c3e50;
+  font-size: 24px;
+  margin-bottom: 32px;
+  position: relative;
+  padding-bottom: 12px;
+  font-weight: 600;
+}
+
+.profile-title:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: #ac9b04;
+}
+
+.profile-section {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ac9b04;
+}
+
+.profile-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 18px;
+  color: #34495e;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  background-color: #ac9b04;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.profile-name {
+  flex: 1;
+}
+
+.profile-name h3 {
+  font-size: 20px;
+  margin: 0 0 5px 0;
+  color: #000000;
+}
+
+.profile-id {
+  color: #7f8c8d;
+  margin: 0;
+  font-size: 14px;
+}
+
+.profile-field {
+  display: flex;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.field-label {
+  width: 160px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.field-value {
+  flex: 1;
+  color: #2c3e50;
+}
+
+.no-profile {
+  text-align: center;
+  padding: 40px 0;
+  color: #7f8c8d;
+}
+
+.no-profile p:first-child {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+  .profile-field {
+    flex-direction: column;
+  }
+  
+  .field-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+}
