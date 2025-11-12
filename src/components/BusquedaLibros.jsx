@@ -5,7 +5,6 @@ import { urlBackend } from '../config/envs';
 
 const API_BASE_URL = `${urlBackend}/api/ontologia`;
 
-
 function BusquedaLibros({ onSearchResults, onSearchPerformed, allLibros }) {
     const [criteriosBusqueda, setCriteriosBusqueda] = useState({
         titulo: '',
@@ -35,7 +34,7 @@ function BusquedaLibros({ onSearchResults, onSearchPerformed, allLibros }) {
                 filtros.push(`regex(?titulo, "${criteriosBusqueda.titulo}", "i")`);
             }
             if (criteriosBusqueda.autor) {
-                filtros.push(`regex(?autorNombre, "${criteriosBusqueda.autor}", "i")`);
+                filtros.push(`regex(?autor, "${criteriosBusqueda.autor}", "i")`);
             }
             if (criteriosBusqueda.genero) {
                 filtros.push(`regex(?genero, "${criteriosBusqueda.genero}", "i")`);
@@ -44,24 +43,51 @@ function BusquedaLibros({ onSearchResults, onSearchPerformed, allLibros }) {
                 filtros.push(`regex(?materia, "${criteriosBusqueda.materia}", "i")`);
             }
             if (criteriosBusqueda.año) {
-                filtros.push(`?anoCreacion = "${criteriosBusqueda.año}"`);
+                filtros.push(`?año = "${criteriosBusqueda.año}"`);
             }
 
             const whereClause = filtros.length > 0 ? `FILTER(${filtros.join(' && ')})` : '';
 
             const sparqlQuery = `
                 PREFIX : <http://www.biblioteca.edu.co/ontologia#>
-                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                
-                SELECT ?obra ?titulo ?autorNombre ?anoCreacion ?genero ?materia
+
+                SELECT ?obra ?titulo ?autor ?año ?genero ?materia ?codigoBarras ?disponibilidad
                 WHERE {
-                    ?obra a :Obra .
-                    ?obra :tituloOriginal ?titulo .
-                    OPTIONAL { ?obra :tieneAutor ?autor . ?autor :nombre ?autorNombre } 
-                    OPTIONAL { ?obra :anoCreacion ?anoCreacion }
-                    OPTIONAL { ?obra :perteneceAGenero ?gen . ?gen :nombreGenero ?genero }
-                    OPTIONAL { ?obra :trataSobre ?mat . ?mat :terminoMateria ?materia }
-                    ${whereClause}
+                  ?obra a :Obra ;
+                        :tituloOriginal ?titulo ;
+                        :esRealizadaPor ?expresion .
+                        
+                  ?expresion :esMaterializadaPor ?manifestacion .
+                  
+                  ?manifestacion :esEjemplificadaPor ?item .
+                  
+                  ?item a :Item ;
+                        :codigoBarras ?codigoBarras ;
+                        :disponibilidad ?disponibilidad .
+                  
+                  # Información del autor (CORREGIDO)
+                  OPTIONAL { 
+                    ?obra :tieneAutor ?autorObj . 
+                    ?autorObj :nombre ?nombreAutor ;
+                              :apellidos ?apellidosAutor .
+                    BIND(CONCAT(?nombreAutor, " ", ?apellidosAutor) AS ?autor)
+                  }
+                  
+                  # Año de creación (CORREGIDO)
+                  OPTIONAL { ?obra :anoCreacion ?año . }
+                  
+                  # Género (CORREGIDO)
+                  OPTIONAL { 
+                    ?obra :perteneceAGenero ?generoObj . 
+                    ?generoObj :nombreGenero ?genero . 
+                  }
+                  
+                  # Materia (CORREGIDO)
+                  OPTIONAL { 
+                    ?obra :trataSobre ?materiaObj . 
+                    ?materiaObj :terminoMateria ?materia . 
+                  }
+                  ${whereClause}
                 }
                 LIMIT 100
             `;
@@ -74,12 +100,13 @@ function BusquedaLibros({ onSearchResults, onSearchPerformed, allLibros }) {
                 const resultados = response.data.data.map((item, index) => ({
                     id: item.obra?.value || `libro-${index}`,
                     titulo: item.titulo?.value || 'Sin título',
-                    autor: item.autorNombre?.value || 'Autor desconocido',
-                    año: item.anoCreacion?.value || 'N/A',
+                    autor: item.autor?.value || 'Autor desconocido',
+                    año: item.año?.value || 'N/A',
                     genero: item.genero?.value || 'N/A',
                     materia: item.materia?.value || 'N/A',
-                    tipo: 'Libro',
-                    disponibilidad: 'Disponible'
+                    codigoBarras: item.codigoBarras?.value || 'N/A', // NUEVO CAMPO
+                    disponibilidad: item.disponibilidad?.value || 'N/A', // NUEVO CAMPO
+                    tipo: 'Libro'
                 }));
                 onSearchResults(resultados);
             } else {

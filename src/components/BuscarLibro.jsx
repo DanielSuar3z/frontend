@@ -25,16 +25,43 @@ function BuscarLibro() {
             try {
                 const sparqlQuery = `
                     PREFIX : <http://www.biblioteca.edu.co/ontologia#>
-                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                    
-                    SELECT ?obra ?titulo ?autorNombre ?anoCreacion ?genero ?materia
+
+                    SELECT ?obra ?titulo ?autor ?año ?genero ?materia ?codigoBarras ?disponibilidad
                     WHERE {
-                        ?obra a :Obra .
-                        ?obra :tituloOriginal ?titulo .
-                        OPTIONAL { ?obra :tieneAutor ?autor . ?autor :nombre ?autorNombre } 
-                        OPTIONAL { ?obra :anoCreacion ?anoCreacion }
-                        OPTIONAL { ?obra :perteneceAGenero ?gen . ?gen :nombreGenero ?genero }
-                        OPTIONAL { ?obra :trataSobre ?mat . ?mat :terminoMateria ?materia }
+                      ?obra a :Obra ;
+                            :tituloOriginal ?titulo ;
+                            :esRealizadaPor ?expresion .
+                            
+                      ?expresion :esMaterializadaPor ?manifestacion .
+                      
+                      ?manifestacion :esEjemplificadaPor ?item .
+                      
+                      ?item a :Item ;
+                            :codigoBarras ?codigoBarras ;
+                            :disponibilidad ?disponibilidad .
+                      
+                      # Información del autor (CORREGIDO)
+                      OPTIONAL { 
+                        ?obra :tieneAutor ?autorObj . 
+                        ?autorObj :nombre ?nombreAutor ;
+                                  :apellidos ?apellidosAutor .
+                        BIND(CONCAT(?nombreAutor, " ", ?apellidosAutor) AS ?autor)
+                      }
+                      
+                      # Año de creación (CORREGIDO)
+                      OPTIONAL { ?obra :anoCreacion ?año . }
+                      
+                      # Género (CORREGIDO)
+                      OPTIONAL { 
+                        ?obra :perteneceAGenero ?generoObj . 
+                        ?generoObj :nombreGenero ?genero . 
+                      }
+                      
+                      # Materia (CORREGIDO)
+                      OPTIONAL { 
+                        ?obra :trataSobre ?materiaObj . 
+                        ?materiaObj :terminoMateria ?materia . 
+                      }
                     }
                     LIMIT 50
                 `;
@@ -47,16 +74,19 @@ function BuscarLibro() {
                     const mappedLibros = response.data.data.map((item, index) => ({
                         id: item.obra?.value || `libro-${index}`,
                         titulo: item.titulo?.value || 'Sin título',
-                        autor: item.autorNombre?.value || 'Autor desconocido',
-                        año: item.anoCreacion?.value || 'N/A',
+                        autor: item.autor?.value || 'Autor desconocido',
+                        año: item.año?.value || 'N/A',
                         genero: item.genero?.value || 'N/A',
                         materia: item.materia?.value || 'N/A',
-                        tipo: 'Libro',
-                        disponibilidad: 'Disponible'
+                        codigoBarras: item.codigoBarras?.value || 'N/A', // NUEVO CAMPO
+                        disponibilidad: item.disponibilidad?.value || 'N/A', // NUEVO CAMPO
+                        tipo: 'Libro'
                     }));
                     setAllLibros(mappedLibros);
                     setLibrosMostrados(mappedLibros);
                     console.log("Todos los libros cargados:", mappedLibros);
+                    // En el fetchAllLibros de BuscarLibro.jsx, después de la respuesta
+                    
                 } else {
                     console.error("Error al cargar todos los libros:", response.data);
                     setAllLibros([]);
@@ -71,7 +101,7 @@ function BuscarLibro() {
             }
         };
 
-        fetchAllLibros();
+        fetchAllLibros();           
     }, []);
 
     // Función que se pasa a BusquedaLibros para actualizar los resultados de búsqueda
@@ -97,8 +127,14 @@ function BuscarLibro() {
 
     const handleReservaExitosa = (datosReserva) => {
         console.log('Reserva exitosa:', datosReserva);
-        // Aquí puedes actualizar el estado de los libros si es necesario
-        // Por ejemplo, marcar el libro como no disponible
+        // Actualizar la disponibilidad del libro en la lista
+        setLibrosMostrados(prevLibros => 
+            prevLibros.map(libro => 
+                libro.codigoBarras === datosReserva.codigo_barras 
+                    ? { ...libro, disponibilidad: 'prestado' }
+                    : libro
+            )
+        );
     };
 
     // Determina qué título mostrar
@@ -125,7 +161,7 @@ function BuscarLibro() {
                 ) : (
                     librosMostrados.length > 0 ? (
                         librosMostrados.map((libro) => (
-                            <div key={libro.id} className="libro-container">
+                            <div key={`${libro.id}-${libro.codigoBarras}`} className="libro-container">
                                 <div className="libro-image-container">
                                     <img
                                         src={imagenLibro}
@@ -151,13 +187,17 @@ function BuscarLibro() {
                                         <span className={`libro-disponibilidad ${libro.disponibilidad?.toLowerCase()}`}>
                                             <i className="disponibilidad-icon">📖</i> {libro.disponibilidad}
                                         </span>
+                                        <span className="libro-codigo-barras">
+                                            <i className="codigo-icon">🏷️</i> {libro.codigoBarras}
+                                        </span>
                                     </div>
                                     <div className="libro-acciones">
                                         <button 
                                             className="btn-reservar"
                                             onClick={() => handleReservarClick(libro)}
+                                            disabled={libro.disponibilidad !== 'disponible'}
                                         >
-                                            Reservar Libro
+                                            {libro.disponibilidad === 'disponible' ? 'Reservar Libro' : 'No Disponible'}
                                         </button>
                                         <button className="btn-detalles">
                                             Ver Detalles

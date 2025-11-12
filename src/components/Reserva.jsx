@@ -9,6 +9,7 @@ const API_BASE_URL = `${urlBackend}/api`; // Ajusta según tu backend
 
 function ReservaLibro({ libro, onClose, onReservaExitosa }) {
     console.log(libro.disponibilidad);
+    console.log(libro.codigoBarras);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
@@ -24,7 +25,8 @@ function ReservaLibro({ libro, onClose, onReservaExitosa }) {
         }
     }, [fechaReserva]);
 
-    const handleReserva = async (e) => {
+    // En handleReserva de Reserva.jsx
+const handleReserva = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -38,13 +40,15 @@ function ReservaLibro({ libro, onClose, onReservaExitosa }) {
             return;
         }
 
+        // CAMBIO IMPORTANTE: Enviar código de barras en lugar de URI de obra
         const datosPrestamo = {
             id_usuario: parseInt(usuarioId),
-            uri_item_ontologia: `http://www.biblioteca.edu.co/ontologia#${libro.id_obra}`,
-            fecha_devolucion_esperada: fechaDevolucion
+            codigo_barras: libro.codigoBarras, // ← Usar código de barras del ítem
+            fecha_devolucion_esperada: fechaDevolucion            
         };
 
         console.log('Enviando préstamo:', datosPrestamo);
+        console.log(libro.codigoBarras);
 
         const token = localStorage.getItem('token');
         const response = await axios.post(`${API_BASE_URL}/prestamos`, datosPrestamo, {
@@ -106,6 +110,7 @@ function ReservaLibro({ libro, onClose, onReservaExitosa }) {
                         <p><strong>Género:</strong> {libro.genero}</p>
                         <p><strong>Materia:</strong> {libro.materia}</p>
                         <p><strong>Disponibilidad:</strong> {libro.disponibilidad}</p>
+                        <p><strong>Código Barras:</strong> {libro.codigoBarras || 'No disponible'}</p>
                     </div>
                 )}
 
