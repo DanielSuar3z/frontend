@@ -2,11 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BuscarLibroComponent from '../components/BuscarLibro'; // Cambiado el import
 import '../styles/InicioPag.css';
-// En la parte superior de BuscarMaterialPage.jsx, agrega:
-import { urlBackend } from '../config/envs'; // Ajusta la ruta según tu estructura
-const API_BASE_URL = `${urlBackend}/api/ontologia`;
-
-//import { urlBackend } from '../config/envs';
 
 function BuscarLibroPage() { // Cambiado el nombre de la función
     const [librosBusqueda, setLibrosBusqueda] = useState([]); // Cambiado el estado
@@ -14,84 +9,57 @@ function BuscarLibroPage() { // Cambiado el nombre de la función
     const [errorBusqueda, setErrorBusqueda] = useState(null);
 
     useEffect(() => {
-        // En el componente que hace la consulta SPARQL (ej: BuscarLibro.jsx o similar)
-const fetchLibros = async () => {
-  try {
-    const sparqlQuery = `
-      PREFIX : <http://www.biblioteca.edu.co/ontologia#>
+        const fetchLibros = async () => { // Cambiado el nombre de la función
+            try {
+                setLoadingBusqueda(true);
+                
+                // Consulta SPARQL para obtener libros de la ontología
+                const sparqlQuery = `
+                    PREFIX : <http://www.biblioteca.edu.co/ontologia#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    
+                    SELECT ?obra ?titulo ?autorNombre ?anoCreacion ?genero ?materia
+                    WHERE {
+                        ?obra a :Obra .
+                        ?obra :tituloOriginal ?titulo .
+                        OPTIONAL { ?obra :tieneAutor ?autor . ?autor :nombre ?autorNombre } 
+                        OPTIONAL { ?obra :anoCreacion ?anoCreacion }
+                        OPTIONAL { ?obra :perteneceAGenero ?gen . ?gen :nombreGenero ?genero }
+                        OPTIONAL { ?obra :trataSobre ?mat . ?mat :terminoMateria ?materia }
+                    }
+                    LIMIT 50
+                `;
 
-      SELECT ?obra ?titulo ?autor ?año ?genero ?materia ?codigoBarras ?disponibilidad
-      WHERE {
-        ?obra a :Obra ;
-              :tituloOriginal ?titulo ;
-              :esRealizadaPor ?expresion .
-              
-        ?expresion :esMaterializadaPor ?manifestacion .
-        
-        ?manifestacion :esEjemplificadaPor ?item .
-        
-        ?item a :Item ;
-              :codigoBarras ?codigoBarras ;
-              :disponibilidad ?disponibilidad .
-        
-        # Información del autor
-        OPTIONAL { 
-          ?obra :tieneAutor ?autorObj . 
-          ?autorObj :nombre ?nombreAutor ;
-                    :apellidos ?apellidosAutor .
-          BIND(CONCAT(?nombreAutor, " ", ?apellidosAutor) AS ?autor)
-        }
-        
-        # Año de creación
-        OPTIONAL { ?obra :anoCreacion ?año . }
-        
-        # Género
-        OPTIONAL { 
-          ?obra :perteneceAGenero ?generoObj . 
-          ?generoObj :nombreGenero ?genero . 
-        }
-        
-        # Materia
-        OPTIONAL { 
-          ?obra :trataSobre ?materiaObj . 
-          ?materiaObj :terminoMateria ?materia . 
-        }
-      }
-      LIMIT 50
-    `;
+                const response = await axios.post('http://localhost:3000/api/ontologia/query', {
+                    query: sparqlQuery
+                });
 
-    const response = await axios.post(`${API_BASE_URL}/query`, {
-      query: sparqlQuery
-    });
+                console.log('Datos de libros para búsqueda recibidos:', response.data);
 
-    console.log("🔍 Respuesta COMPLETA de SPARQL:", response.data.data);
-
-    if (response.data && response.data.success) {
-      const mappedLibros = response.data.data.map((item, index) => {
-        // Debug: ver la estructura de cada item
-        console.log(`📖 Item ${index} completo:`, item);
-        
-        return {
-          id: item.obra?.value || `libro-${index}`,
-          titulo: item.titulo?.value || 'Sin título',
-          autor: item.autor?.value || 'Autor desconocido',
-          año: item.año?.value || 'N/A',
-          genero: item.genero?.value || 'N/A',
-          materia: item.materia?.value || 'N/A',
-          codigoBarras: item.codigoBarras?.value, // ← ESTO ES CRÍTICO
-          disponibilidad: item.disponibilidad?.value, // ← ESTO ES CRÍTICO
-          tipo: 'Libro'
+                if (response.data && response.data.success) {
+                    // Mapear los datos de la ontología al formato esperado por el componente
+                    const librosMapeados = response.data.data.map((item, index) => ({
+                        id: item.obra?.value || `libro-${index}`,
+                        titulo: item.titulo?.value || 'Sin título',
+                        autor: item.autorNombre?.value || 'Autor desconocido',
+                        año: item.anoCreacion?.value || 'N/A',
+                        genero: item.genero?.value || 'N/A',
+                        materia: item.materia?.value || 'N/A',
+                        tipo: 'Libro',
+                        disponibilidad: 'Disponible'
+                    }));
+                    
+                    setLibrosBusqueda(librosMapeados);
+                } else {
+                    setErrorBusqueda('No se pudieron cargar los libros desde la ontología.');
+                }
+            } catch (err) {
+                console.error('Error al cargar los libros para búsqueda:', err);
+                setErrorBusqueda('Error al cargar el catálogo de libros. Intenta de nuevo más tarde.');
+            } finally {
+                setLoadingBusqueda(false);
+            }
         };
-      });
-
-      console.log("🎯 Libros mapeados FINALES:", mappedLibros);
-      return mappedLibros;
-    }
-  } catch (error) {
-    console.error('Error al obtener libros:', error);
-    return [];
-  }
-};
 
         fetchLibros();
     }, []);

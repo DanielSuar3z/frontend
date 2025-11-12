@@ -5,11 +5,10 @@ import '../styles/Reserva.css';
 
 import { urlBackend } from '../config/envs';
 
-const API_BASE_URL = `${urlBackend}/api`; // Ajusta según tu backend
+const API_BASE_URL = `${urlBackend}/api`;
 
 function ReservaLibro({ libro, onClose, onReservaExitosa }) {
     console.log(libro.disponibilidad);
-    console.log(libro.codigoBarras);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
@@ -25,60 +24,58 @@ function ReservaLibro({ libro, onClose, onReservaExitosa }) {
         }
     }, [fechaReserva]);
 
-    // En handleReserva de Reserva.jsx
-const handleReserva = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+    const handleReserva = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
 
-    try {
-        const usuarioId = localStorage.getItem('usuarioId');
-        
-        if (!usuarioId) {
-            setError('Debe iniciar sesión para reservar un libro');
+        try {
+            const usuarioId = localStorage.getItem('usuarioId');
+            
+            if (!usuarioId) {
+                setError('Debe iniciar sesión para reservar un libro');
+                setIsLoading(false);
+                return;
+            }
+
+            // VERSIÓN ANTERIOR: Usaba la URI de la obra directamente
+            const datosPrestamo = {
+                id_usuario: parseInt(usuarioId),
+                uri_item_ontologia: `http://www.biblioteca.edu.co/ontologia#${libro.id_obra}`,
+                fecha_devolucion_esperada: fechaDevolucion
+            };
+
+            console.log('Enviando préstamo:', datosPrestamo);
+
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`${API_BASE_URL}/prestamos`, datosPrestamo, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.data && response.data.success) {
+                setSuccess(true);
+                if (onReservaExitosa) {
+                    onReservaExitosa(response.data.data);
+                }
+                setTimeout(() => {
+                    if (onClose) onClose();
+                }, 2000);
+            } else {
+                setError(response.data?.message || 'Error al realizar el préstamo');
+            }
+        } catch (error) {
+            console.error('Error en préstamo:', error);
+            if (error.response) {
+                setError(error.response.data?.error || error.response.data?.message || 'Error del servidor');
+            } else {
+                setError('Error de conexión con el servidor');
+            }
+        } finally {
             setIsLoading(false);
-            return;
         }
-
-        // CAMBIO IMPORTANTE: Enviar código de barras en lugar de URI de obra
-        const datosPrestamo = {
-            id_usuario: parseInt(usuarioId),
-            codigo_barras: libro.codigoBarras, // ← Usar código de barras del ítem
-            fecha_devolucion_esperada: fechaDevolucion            
-        };
-
-        console.log('Enviando préstamo:', datosPrestamo);
-        console.log(libro.codigoBarras);
-
-        const token = localStorage.getItem('token');
-        const response = await axios.post(`${API_BASE_URL}/prestamos`, datosPrestamo, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (response.data && response.data.success) {
-            setSuccess(true);
-            if (onReservaExitosa) {
-                onReservaExitosa(response.data.data);
-            }
-            setTimeout(() => {
-                if (onClose) onClose();
-            }, 2000);
-        } else {
-            setError(response.data?.message || 'Error al realizar el préstamo');
-        }
-    } catch (error) {
-        console.error('Error en préstamo:', error);
-        if (error.response) {
-            setError(error.response.data?.error || error.response.data?.message || 'Error del servidor');
-        } else {
-            setError('Error de conexión con el servidor');
-        }
-    } finally {
-        setIsLoading(false);
-    }
-};
+    };
 
     // Fecha mínima (hoy)
     const today = new Date().toISOString().split('T')[0];
@@ -110,7 +107,6 @@ const handleReserva = async (e) => {
                         <p><strong>Género:</strong> {libro.genero}</p>
                         <p><strong>Materia:</strong> {libro.materia}</p>
                         <p><strong>Disponibilidad:</strong> {libro.disponibilidad}</p>
-                        <p><strong>Código Barras:</strong> {libro.codigoBarras || 'No disponible'}</p>
                     </div>
                 )}
 
